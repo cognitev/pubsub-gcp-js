@@ -1,4 +1,4 @@
-import { PubSub } from '@google-cloud/pubsub';
+const { PubSub } = require('@google-cloud/pubsub');
 
 let pubsub = null;
 const topics = [];
