@@ -1,7 +1,6 @@
 const {PubSub} = require('@google-cloud/pubsub');
 
 let pubsub = null;
-let topics = [];
 
 /**
  * @function {initClient}
@@ -29,66 +28,21 @@ const initClient = async function(projectId, clientEmail, privateKey) {
 };
 
 /**
- * @function {initTopics}
- * @summary intialize the topics you want to push messages to
- * @param passedTopics (Array)(required) the list of topic names you want to add (will be auto created if not existant in project)
- * @returns {None}
- */
-const initTopics = async function(passedTopics) {
-  if (!pubsub || !Array.isArray(passedTopics)) {
-    return {error: 'make sure pubsub is initalized and passed topics is array type'};
-  }
-  topics = [];
-  passedTopics.forEach(async t => {
-    try {
-      await addTopic(t);
-    } catch (err) {
-      console.log(err);
-    }
-  });
-};
-
-/**
- * @function {addTopic}
- * @summary add a new topic to the list of targeted topics
- * @param topic (string)(required) topic name you want to add (will be auto created if not existant in project)
- * @returns {object} to flag success/failure of operation using keys success/error
- */
-const addTopic = async function(topic) {
-  if (typeof (topic) !== 'string') {
-    return {error: 'topic passed should be string'};
-  }
-  topics.push(topic);
-  return {success: true};
-};
-
-/**
- * @function {topicExists}
- * @summary check if topic name is supported in your list of targeted topics
- * @param topic (string)(required) topic name you want to check
- * @returns {boolean}
- */
-const topicExists = function(topic) {
-  return topics.includes(topic);
-};
-
-/**
- * @function {topicExits}
- * @summary check if topic name is supported in your list of targeted topics
+ * @function {publish}
+ * @summary publish a message on the specified topic
  * @param payload (string | hashmap)(required) data to be sent as message
+ * @param topicName {String} name of the topic to use for publishing
+ * @param createTopic {Boolean} whether to create the topic if not found or not before publishing
  * @returns {String} id of the message sent
  */
-const publish = async function(payload, topicName) {
+const publish = async function(payload, topicName, createTopic = false) {
   if (!pubsub) {
-    return {error: 'make sure pubsub is intitalized'};
-  }
-  if (!topicExists(topicName)) {
-    return {error: 'make sure topic is registered before using it'};
+    throw Error('pubsub is not intitalized');
   }
 
   try {
     const topic = pubsub.topic(topicName);
-    if (topic.get){
+    if (createTopic){
       await topic.get({ autoCreate: true });
     }
     const data = Buffer.from(JSON.stringify(payload));
@@ -100,11 +54,7 @@ const publish = async function(payload, topicName) {
   }
 };
 
-
 module.exports = {
   initClient,
-  initTopics,
-  addTopic,
-  topicExists,
   publish,
 };

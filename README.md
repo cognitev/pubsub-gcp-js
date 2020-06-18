@@ -33,31 +33,10 @@ following envs respectively:
 - `GCLOUD_CLIENT_EMAIL`
 - `GCLOUD_PRIVATE_KEY`
 
-- second step is to register your topics, so that you know which topics you are sending messages to. trying to publish on
-any topic that was not regsitered here will not be allowed even if it exits.
-
-```js
-await pubsub.initTopics(['t1', 't2', 't3'])
-```
-
-to assert that a topic is registered:
-
-```js
-pubsub.topicExists('t1'); // true
-pubsub.topicExists('t222'); // false
-```
-
-- finally to publish a message on any of your topics:
+- to publish a message on any of your topics:
 
 ```js
 await pubsub.publish({'random': 'message'}, 't2'); // will return message id on topic
 ```
 
-Note that even if the topic does not exit on your project on GCP, the registered topic you entered will be automatically
-created on first publish on your project.
-
-- you can add topics later to your list of topics using
-
-```js
-pubsub.addTopic('t4')
-```
+Note: you can pass a third argument `create_topic` as true to auto create the topic then publish the message

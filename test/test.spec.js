@@ -15,6 +15,14 @@ gcpMockClient.setUp({
 });
 
 describe('Basic Publish Message Scenario', () => {
+  it('should wait for intialization before publishing', async() => {
+    try {
+      await pubsub.publish({bb: 12}, topicName);
+      assert.fail('client not intialized expected to throw error');
+    } catch (err) {
+      assert.equal(String(err).includes('pubsub is not intitalized'), true);
+    }
+  });
   it('should throw error with malformed credentials', async() => {
     try {
       await pubsub.initClient('test_project', 'test@email.com', {});
@@ -23,23 +31,10 @@ describe('Basic Publish Message Scenario', () => {
       assert.equal(String(err).includes('failed to setup pubsub |'), true);
     }
   });
-  it('should accept and register new/exiting topics as intialization', async() => {
+  it('should publish message on a topic', async() => {
     await pubsub.initClient('test_project', 'test@email.com', 'fake key');
-    await pubsub.initTopics([topicName]);
-    assert.equal(pubsub.topicExists(topicName), true);
-  });
-  it('should publish message on a registered topic', async() => {
-    await pubsub.initClient('test_project', 'test@email.com', 'fake key');
-    await pubsub.initTopics([topicName]);
     const res = await pubsub.publish({bb: 12}, topicName);
     assert.equal(res.error, undefined);
     assert.equal('messageId' in res, true);
   });
-  it('should block publish message on not registered topic', async() => {
-    await pubsub.initClient('test_project', 'test@email.com', 'fake key');
-    await pubsub.initTopics([topicName]);
-    const res = await pubsub.publish({bb: 12}, topicName + 'random_suffix');
-    assert.equal('error' in res, true);
-  });
-
 });
