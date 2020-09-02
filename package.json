@@ -1,0 +1,32 @@
+{
+  "name": "pubsub-gcp",
+  "version": "2.0.0",
+  "description": "a wrapping package around gcp pubsub package to provide a more conveniet, abstract functionalities",
+  "main": "pubsub.js",
+  "scripts": {
+    "test": "mocha --timeout 5000 --exit",
+    "lint": "eslint --ignore-path .eslintignore ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cognitev/pubsub-gcp-js.git"
+  },
+  "keywords": [
+    "pubsub",
+    "gcloud"
+  ],
+  "author": "kareem emad",
+  "license": "AGPL v3",
+  "bugs": {
+    "url": "https://github.com/cognitev/pubsub-gcp-js/issues"
+  },
+  "homepage": "https://github.com/cognitev/pubsub-gcp-js#readme",
+  "dependencies": {
+    "@google-cloud/pubsub": "1.1.5",
+    "eslint": "^5.0.0",
+    "eslint-config-strongloop": "^2.1.0",
+    "eslint-plugin-mocha": "^7.0.1",
+    "google-pubsub-mock": "^1.3.0",
+    "mocha": "^5.2.0"
+  }
+}
